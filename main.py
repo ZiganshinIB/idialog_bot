@@ -14,9 +14,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def get_dialog_response(text, language_code='ru'):
+def get_dialog_response(text, session_id, language_code='ru'):
     session_client = dialogflow.SessionsClient()
-    session = session_client.session_path(os.getenv('DIALOG_FLOW_PROJECT_ID'), os.getenv('DIALOGFLOW_SESSION_ID'))
+    session = session_client.session_path(os.getenv('DIALOG_FLOW_PROJECT_ID'), session_id)
     text_input = dialogflow.types.TextInput(text=text, language_code=language_code)
     query_input = dialogflow.types.QueryInput(text=text_input)
     dialogflow_response = session_client.detect_intent(session=session, query_input=query_input)
@@ -47,9 +47,12 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
 def echo(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
-
-    response = get_dialog_response(update.message.text)
-    update.message.reply_text(response['response_text'])
+    try:
+        response_text = get_dialog_response(update.message.text, update.message.chat_id)['response_text']
+        update.message.reply_text(response_text)
+    except Exception as e:
+        response_text = "Не совсем понял тебя"
+        update.message.reply_text(response_text)
 
 
 def main() -> None:
