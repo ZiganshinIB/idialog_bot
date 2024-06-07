@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from google.cloud import dialogflow_v2beta1 as dialogflow
 
 # Enable logging
 logging.basicConfig(
@@ -11,6 +12,21 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
+
+def get_dialog_response(text, language_code='ru'):
+    session_client = dialogflow.SessionsClient()
+    session = session_client.session_path(os.getenv('DIALOG_FLOW_PROJECT_ID'), os.getenv('DIALOGFLOW_SESSION_ID'))
+    text_input = dialogflow.types.TextInput(text=text, language_code=language_code)
+    query_input = dialogflow.types.QueryInput(text=text_input)
+    dialogflow_response = session_client.detect_intent(session=session, query_input=query_input)
+    response = {
+        'query_text': dialogflow_response.query_result.query_text,
+        'intent': dialogflow_response.query_result.intent.display_name,
+        'confidence': dialogflow_response.query_result.intent_detection_confidence,
+        'response_text': dialogflow_response.query_result.fulfillment_text,
+    }
+    return response
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -31,7 +47,9 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
 def echo(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
-    update.message.reply_text(update.message.text)
+
+    response = get_dialog_response(update.message.text)
+    update.message.reply_text(response['response_text'])
 
 
 def main() -> None:
