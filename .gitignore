@@ -5,6 +5,8 @@ temp/
 __pycache__/
 *.py[cod]
 *$py.class
+#
+.idea
 
 # Distribution / packaging
 .Python
