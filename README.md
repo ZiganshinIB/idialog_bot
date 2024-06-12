@@ -1,5 +1,7 @@
 # Бот для общение 
 Бот который может понимать речь и отвечать на вопросы
+![telegram.gif](git_media/telegram.gif)
+![vk.gif](git_media/vk.gif)
 ## Задачи, которые выполняет
 * Общение в телеграм 
 * Интеграция с Google DialogFlow
@@ -36,7 +38,7 @@ TELEGRAM_BOT_TOKEN='Токен_для_телеграм_бота'
 TELEGRAM_BOT_LOGS_CHAT_ID=1
 DIALOG_FLOW_PROJECT_ID='название вашего проекта'
 GOOGLE_API_KEY='Google api ключ'
-GOOGLE_APPLICATION_CREDENTIALS='/home/ziganshinib/.config/gcloud/application_default_credentials.json'
+GOOGLE_APPLICATION_CREDENTIALS=''
 DIALOGFLOW_SESSION_ID='me'
 VK_API_TOKEN=''
 ```
