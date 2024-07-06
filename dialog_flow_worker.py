@@ -54,15 +54,67 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
     print("Intent created: {}".format(google_response))
 
 
+def load_intents(
+        project_id,
+        intents_data,
+        training_phrases_parts_name='questions',
+        message_texts_name='answer'
+):
+    """
+    Загружает интенты в Google Cloud.
+    :param project_id: ID проекта в Google Cloud
+    :param intents_data: Словарь с названиями интентов и списком наборов фраз.
+    :param training_phrases_parts_name: Название словаря с наборами фраз.
+    :param message_texts_name: Название словаря с сообщениями.
+    Example intents_data = {
+        display_name: {
+            training_phrases_parts_name: [
+                phrase1,
+                phrase2,
+                ...
+            ],
+            message_texts_name: [
+                message1,
+                message2,
+                ...
+        },
+        ...
+    }
+    """
+    if type(intents_data) != dict:
+        raise TypeError('intents_data must be a dict')
+    for display_name in intents_data:
+        training_phrases = intents_data[display_name][training_phrases_parts_name]
+        if type(intents_data[display_name]['answer']) == list:
+            message_texts = intents_data[display_name][message_texts_name]
+        else:
+            message_texts = [intents_data[display_name][message_texts_name]]
+        create_intent(
+            project_id,
+            display_name,
+            training_phrases,
+            message_texts
+        )
+
+
+def load_url_intents(project_id, url):
+    """
+    Загружает интенты из JSON-файла.
+    :param project_id: ID проекта в Google Cloud
+    :param url: URL-адрес JSON-файла с интентами.
+    """
+    response = requests.get(url)
+    if 200 <= response.status_code < 300:
+        raise Exception(response.content)
+    else:
+        data_for_dialog = json.loads(response.content)
+        load_intents(project_id, data_for_dialog)
+
+
+
+
 if __name__ == "__main__":
     load_dotenv()
-    response = requests.get(
-        'https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json'
-    )
-    data_for_dialog = json.loads(response.content)
-    for display_name in data_for_dialog:
-        training_phrases = data_for_dialog[display_name]['questions']
-        message_texts = data_for_dialog[display_name]['answer']
-        project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
-        create_intent(project_id, display_name, training_phrases,
-                      [message_texts])
+    project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
+    url_data_intents = 'https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json'
+    load_url_intents(project_id, url_data_intents)

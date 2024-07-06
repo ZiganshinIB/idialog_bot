@@ -88,3 +88,51 @@ create_intent(
     message_texts=message_texts
 )
 ```
+### Загрузить JSON
+Так же есть другие методы обучения. Через уже готовы JSON
+Пример:
+```python
+from dialog_flow_worker import load_intents
+import os
+data = {
+    "Устройство на работу": {
+        "questions":[
+            "Как устроиться к вам на работу?",
+            "Как устроиться к вам?",
+            "Как работать у вас?",
+            "Хочу работать у вас",
+            "Возможно-ли устроиться к вам?",
+            "Можно-ли мне поработать у вас?",
+            "Хочу работать редактором у вас"
+        ],
+        "answer":[
+            "Если вы хотите устроиться к нам, напишите на почту game-of-verbs@gmail.com мини-эссе о себе и прикрепите ваше портфолио.",
+        ]
+    },
+}
+project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
+load_intents(project_id, data,
+             training_phrases_parts_name="questions",
+             message_texts_name="answer")
+```
+Где
+```text
+project_id: ID проекта в Google Cloud
+intents_data: Словарь с названиями интентов и списком наборов фраз.
+training_phrases_parts_name: Название словаря с наборами фраз.
+message_texts_name: Название словаря с сообщениями.
+```
+### Загрузить JSON из URL
+```python
+from dialog_flow_worker import load_url_intents
+import os
+project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
+url = "http://..../*.json"
+load_url_intents(project_id, url=url)
+```
+Где 
+```text
+ project_id: ID проекта в Google Cloud
+ url: URL-адрес JSON-файла с интентами
+```
+
