@@ -9,7 +9,7 @@ from dialog_flow_worker import get_dialog_response
 logger = logging.getLogger(__name__)
 
 
-def dialog_flow_response(event, vk_api) -> None:
+def git_dialog_flow_response(event, vk_api) -> None:
     """Echo the user message."""
     response_text = get_dialog_response(event.text, event.user_id)['response_text']
     vk_api.messages.send(user_id=event.user_id, message=response_text, random_id=0)
@@ -27,7 +27,7 @@ def main() -> None:
     logger.addHandler(MyLogsHandler(tg_bot_token, tg_log_chat_id))
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-            dialog_flow_response(event, vk_api)
+            git_dialog_flow_response(event, vk_api)
  
 
 if __name__ == "__main__":

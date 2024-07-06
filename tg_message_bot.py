@@ -19,7 +19,7 @@ def start(update: Update, context: CallbackContext) -> None:
     )
 
 
-def dialog_flow_response(update: Update, context: CallbackContext) -> None:
+def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
     try:
         response_text = get_dialog_response(update.message.text, update.message.chat_id)['response_text']
@@ -40,7 +40,7 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
     # on non command i.e message - echo the message on Telegram
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, dialog_flow_response))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, get_dialog_flow_response))
     # Start the Bot
     updater.start_polling()
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
