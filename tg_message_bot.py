@@ -1,5 +1,7 @@
 import logging
 import os
+
+import telegram.error
 from dotenv import load_dotenv
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
@@ -24,7 +26,7 @@ def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
     try:
         response_text = get_dialog_response(update.message.text, update.message.chat_id)['response_text']
         update.message.reply_text(response_text)
-    except Exception as e:
+    except telegram.error.BadRequest:
         response_text = "Не совсем понял тебя"
         update.message.reply_text(response_text)
 
