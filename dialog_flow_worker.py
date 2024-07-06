@@ -19,8 +19,14 @@ def get_dialog_response(text, session_id, language_code='ru'):
     }
     return response
 
+
 def create_intent(project_id, display_name, training_phrases_parts, message_texts):
-    """Create an intent of the given intent type."""
+    """ Create an intent.
+    :param project_id: ID проекта в Google Cloud
+    :param display_name: Тема интента
+    :param training_phrases_parts: Список набора фраз, предложении и сообщений.
+    :param message_texts: Ответ на training_phrases_parts.
+    """
     from google.cloud import dialogflow
 
     intents_client = dialogflow.IntentsClient()
@@ -29,7 +35,6 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
     training_phrases = []
     for training_phrases_part in training_phrases_parts:
         part = dialogflow.Intent.TrainingPhrase.Part(text=training_phrases_part)
-        # Here we create a new training phrase for each provided part.
         training_phrase = dialogflow.Intent.TrainingPhrase(parts=[part])
         training_phrases.append(training_phrase)
 
@@ -55,4 +60,5 @@ if __name__ == "__main__":
         training_phrases = data_for_dialog[display_name]['questions']
         message_texts = data_for_dialog[display_name]['answer']
         project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
-        create_intent(project_id, display_name, training_phrases, [message_texts])
+        create_intent(project_id, display_name, training_phrases,
+                      [message_texts])

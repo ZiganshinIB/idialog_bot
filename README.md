@@ -54,3 +54,37 @@ VK_API_TOKEN=''
 python tg_message_bot.py
 python vk_message_bot.py
 ```
+
+## Дополнительные фичи
+### Обучение новым словам 
+В модули ```dialog_flow_worker``` содержит метод create_intent, который принимает на вход следующие значении
+project_id: ID проекта в Google Cloud
+display_name: Тема интента
+training_phrases_parts: Список набора фраз, предложении и сообщений.
+message_texts: Список ответов на training_phrases_parts.
+Пример работы:
+```python
+from dialog_flow_worker import create_intent
+import os
+
+project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
+display_name = "Устройство на работу"
+training_phrases_parts = [
+    "Как устроиться к вам на работу?",
+    "Как устроиться к вам?",
+    "Как работать у вас?",
+    "Хочу работать у вас",
+    "Возможно-ли устроиться к вам?",
+    "Можно-ли мне поработать у вас?",
+    "Хочу работать редактором у вас"
+]
+message_texts = [
+    "Если вы хотите устроиться к нам, напишите на почту game-of-verbs@gmail.com мини-эссе о себе и прикрепите ваше портфолио.",
+]
+create_intent(
+    project_id=project_id,
+    display_name=display_name,
+    training_phrases_parts=training_phrases_parts,
+    message_texts=message_texts
+)
+```
