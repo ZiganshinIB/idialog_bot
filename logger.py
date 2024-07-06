@@ -4,12 +4,17 @@ import time
 import telegram
 import os
 
+
 class MyLogsHandler(logging.Handler):
 
-    def __init__(self,):
+    def __init__(
+            self,
+            tg_bot_token,
+            tg_log_chat_id
+    ):
         super().__init__()
-        self.bot=telegram.Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"))
-        self.chat_id=os.getenv("TELEGRAM_BOT_LOGS_CHAT_ID")
+        self.bot = telegram.Bot(token=tg_bot_token)
+        self.chat_id = os.getenv(tg_log_chat_id)
 
     def emit(self, record, **kwargs):
         log_entry = self.format(record)

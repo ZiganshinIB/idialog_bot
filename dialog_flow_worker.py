@@ -119,12 +119,3 @@ def load_url_intents(project_id, url):
     else:
         data_for_dialog = json.loads(response.content)
         load_intents(project_id, data_for_dialog)
-
-
-
-
-if __name__ == "__main__":
-    load_dotenv()
-    project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
-    url_data_intents = 'https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json'
-    load_url_intents(project_id, url_data_intents)

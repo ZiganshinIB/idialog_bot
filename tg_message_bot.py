@@ -32,12 +32,13 @@ def dialog_flow_response(update: Update, context: CallbackContext) -> None:
 def main() -> None:
     """Start the bot."""
     load_dotenv()
-    logger.addHandler(MyLogsHandler())
-    updater = Updater(os.getenv('TELEGRAM_BOT_TOKEN'))
+    tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
+    tg_log_chat_id = os.getenv('TELEGRAM_BOT_LOGS_CHAT_ID')
+    logger.addHandler(MyLogsHandler(tg_bot_token, tg_log_chat_id))
+    updater = Updater(tg_bot_token)
     dispatcher = updater.dispatcher
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, dialog_flow_response))
     # Start the Bot

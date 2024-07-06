@@ -18,10 +18,13 @@ def dialog_flow_response(event, vk_api) -> None:
 def main() -> None:
     """Start the bot."""
     load_dotenv()
-    vk_session = vk.VkApi(token=os.getenv('VK_API_TOKEN'))
+    vk_token = os.getenv('VK_API_TOKEN')
+    tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
+    tg_log_chat_id = os.getenv('TELEGRAM_BOT_LOGS_CHAT_ID')
+    vk_session = vk.VkApi(token=vk_token)
     vk_api = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
-    logger.addHandler(MyLogsHandler())
+    logger.addHandler(MyLogsHandler(tg_bot_token, tg_log_chat_id))
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me:
             dialog_flow_response(event, vk_api)
