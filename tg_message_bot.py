@@ -23,12 +23,9 @@ def start(update: Update, context: CallbackContext) -> None:
 
 def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
     """Echo the user message."""
-    try:
-        response_text = get_dialog_response(update.message.text, update.message.chat_id)['response_text']
-        update.message.reply_text(response_text)
-    except telegram.error.BadRequest:
-        response_text = "Не совсем понял тебя"
-        update.message.reply_text(response_text)
+    response_text = get_dialog_response(update.message.text, update.message.chat_id)['response_text']
+    update.message.reply_text(response_text)
+
 
 
 def main() -> None:
@@ -44,11 +41,14 @@ def main() -> None:
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, get_dialog_flow_response))
     # Start the Bot
-    updater.start_polling()
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
+    try:
+        updater.start_polling()
+        # Run the bot until you press Ctrl-C or the process receives SIGINT,
+        # SIGTERM or SIGABRT. This should be used most of the time, since
+        # start_polling() is non-blocking and will stop the bot gracefully.
+        updater.idle()
+    except Exception as e:
+        logger.error("Бот Telegram перестал работать: " + str(e), exc_info=True)
 
 
 if __name__ == '__main__':
