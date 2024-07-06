@@ -83,12 +83,22 @@ def load_intents(
     """
     if type(intents_data) != dict:
         raise TypeError('intents_data must be a dict')
-    for display_name in intents_data:
-        training_phrases = intents_data[display_name][training_phrases_parts_name]
-        if type(intents_data[display_name]['answer']) == list:
-            message_texts = intents_data[display_name][message_texts_name]
-        else:
-            message_texts = [intents_data[display_name][message_texts_name]]
+    for display_name, intents in intents_data.items():
+        if type(intents) != dict:
+            raise TypeError('intents must be a dict')
+        for k, v in intents.items():
+            if k == training_phrases_parts_name:
+                if type(v) != list:
+                    raise TypeError('training_phrases_parts must be a list')
+                training_phrases = v
+            elif k == message_texts_name:
+                if type(v) == list:
+                    message_texts = v
+                else:
+                    message_texts = [v]
+            else:
+                raise Exception(f'Unknown key: {k}')
+
         create_intent(
             project_id,
             display_name,
