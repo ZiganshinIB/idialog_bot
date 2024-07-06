@@ -8,7 +8,10 @@ from google.cloud import dialogflow_v2beta1 as dialogflow
 def get_dialog_response(text, session_id, language_code='ru'):
     session_client = dialogflow.SessionsClient()
     session = session_client.session_path(os.getenv('DIALOG_FLOW_PROJECT_ID'), session_id)
-    text_input = dialogflow.types.TextInput(text=text, language_code=language_code)
+    text_input = dialogflow.types.TextInput(
+        text=text,
+        language_code=language_code
+    )
     query_input = dialogflow.types.QueryInput(text=text_input)
     dialogflow_response = session_client.detect_intent(session=session, query_input=query_input)
     response = {
@@ -45,16 +48,18 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
         display_name=display_name, training_phrases=training_phrases, messages=[message]
     )
 
-    response = intents_client.create_intent(
+    google_response = intents_client.create_intent(
         request={"parent": parent, "intent": intent}
     )
 
-    print("Intent created: {}".format(response))
+    print("Intent created: {}".format(google_response))
 
 
 if __name__ == "__main__":
     load_dotenv()
-    response = requests.get('https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json')
+    response = requests.get(
+        'https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json'
+    )
     data_for_dialog = json.loads(response.content)
     for display_name in data_for_dialog:
         training_phrases = data_for_dialog[display_name]['questions']
