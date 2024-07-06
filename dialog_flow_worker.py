@@ -2,17 +2,18 @@ import requests
 import json
 from dotenv import load_dotenv
 import os
-from google.cloud import dialogflow_v2beta1 as dialogflow
+from google.cloud import dialogflow_v2beta1
+from google.cloud import dialogflow
 
 
 def get_dialog_response(text, session_id, language_code='ru'):
-    session_client = dialogflow.SessionsClient()
+    session_client = dialogflow_v2beta1.SessionsClient()
     session = session_client.session_path(os.getenv('DIALOG_FLOW_PROJECT_ID'), session_id)
-    text_input = dialogflow.types.TextInput(
+    text_input = dialogflow_v2beta1.types.TextInput(
         text=text,
         language_code=language_code
     )
-    query_input = dialogflow.types.QueryInput(text=text_input)
+    query_input = dialogflow_v2beta1.types.QueryInput(text=text_input)
     dialogflow_response = session_client.detect_intent(session=session, query_input=query_input)
     response = {
         'query_text': dialogflow_response.query_result.query_text,
@@ -30,8 +31,6 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
     :param training_phrases_parts: Список набора фраз, предложении и сообщений.
     :param message_texts: Ответ на training_phrases_parts.
     """
-    from google.cloud import dialogflow
-
     intents_client = dialogflow.IntentsClient()
 
     parent = dialogflow.AgentsClient.agent_path(project_id)
