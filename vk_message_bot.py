@@ -12,7 +12,10 @@ logger = logging.getLogger(__name__)
 def git_dialog_flow_response(event, vk_api) -> None:
     """Echo the user message."""
     response_text = get_dialog_response(event.text, event.user_id)['response_text']
-    vk_api.messages.send(user_id=event.user_id, message=response_text, random_id=0)
+    if response_text:
+        vk_api.messages.send(user_id=event.user_id, message=response_text, random_id=0)
+    else:
+        vk_api.messages.send(user_id=event.user_id, message='Запрос отправлен в техническую поддержку', random_id=0)
 
 
 def main() -> None:
