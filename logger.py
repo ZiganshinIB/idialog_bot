@@ -1,8 +1,6 @@
 import logging
 import time
-
 import telegram
-import os
 
 
 class MyLogsHandler(logging.Handler):
@@ -14,7 +12,7 @@ class MyLogsHandler(logging.Handler):
     ):
         super().__init__()
         self.bot = telegram.Bot(token=tg_bot_token)
-        self.chat_id = os.getenv(tg_log_chat_id)
+        self.chat_id = tg_log_chat_id
 
     def emit(self, record, **kwargs):
         log_entry = self.format(record)
@@ -36,4 +34,3 @@ class MyLogsHandler(logging.Handler):
             )
             time.sleep(5)
             self.emit(new_record)
-
