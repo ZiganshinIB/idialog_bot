@@ -11,7 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 def git_dialog_flow_response(event, vk_api) -> None:
-    """Echo the user message."""
+    """
+    A function that generates a response for a dialog using the google dialog flow.
+
+    :param event: the dialog flow event
+    :param vk_api: the API for working with VKontakte
+
+    :return: None
+    """
     response_text = get_dialog_response(
         project_id,
         event.text,

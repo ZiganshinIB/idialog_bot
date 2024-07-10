@@ -24,7 +24,13 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
-    """Echo the user message."""
+    """
+    A function that generates a response for a dialog using the google dialog flow.
+
+    :param update: The incoming update from the user.
+    :param context: The context for the current callback.
+    :return: None
+    """
     response_text = get_dialog_response(
         project_id,
         update.message.text,
