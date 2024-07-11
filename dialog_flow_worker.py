@@ -16,6 +16,7 @@ def get_dialog_response(project_id, text, session_id, language_code='ru'):
         session=session,
         query_input=query_input)
     response = {
+        'is_fallback': dialogflow_response.query_result.is_fallback,
         'query_text': dialogflow_response.query_result.query_text,
         'intent': dialogflow_response.query_result.intent.display_name,
         'confidence':
@@ -123,3 +124,18 @@ def load_url_intents(project_id, url):
     response.raise_for_status()
     data_for_dialog = json.loads(response.content)
     load_intents(project_id, data_for_dialog)
+
+
+# Более подробнее читать:
+# https://github.com/ZiganshinIB/idialog_bot/tree/main?tab=readme-ov-file#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D1%84%D0%B8%D1%87%D0%B8
+if __name__ == "__main__":
+    #  Для примера подгружаем интенты из JSON-файла по следующему адресу:
+    url = 'https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json'
+    response = requests.get(url)
+    data_for_dialog = json.loads(response.content)
+    for display_name in data_for_dialog:
+        training_phrases = data_for_dialog[display_name]['questions']
+        message_texts = data_for_dialog[display_name]['answer']
+        project_id = 0 # ID вашего проекта
+        create_intent(project_id, display_name, training_phrases,
+                      [message_texts])

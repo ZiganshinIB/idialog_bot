@@ -31,10 +31,14 @@ def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
     :param context: The context for the current callback.
     :return: None
     """
-    response_text = get_dialog_response(
+    response = get_dialog_response(
         project_id,
         update.message.text,
-        update.message.chat_id)['response_text']
+        update.message.chat_id)
+    if response['is_fallback']:
+        response_text = 'Запрос отправлен в техническую поддержку дождитесь ответа от нейрофона'
+    else:
+        response_text = response.response_text
     update.message.reply_text(response_text)
 
 

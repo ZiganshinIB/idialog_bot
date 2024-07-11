@@ -19,19 +19,17 @@ def git_dialog_flow_response(event, vk_api) -> None:
 
     :return: None
     """
-    response_text = get_dialog_response(
+    response = get_dialog_response(
         project_id,
         event.text,
-        event.user_id)['response_text']
-    if response_text:
-        vk_api.messages.send(
+        event.user_id)
+    if response['is_fallback']:
+        response_text = 'Запрос отправлен в техническую поддержку дождитесь ответа от нейрофона'
+    else:
+        response_text = response.response_text
+    vk_api.messages.send(
             user_id=event.user_id,
             message=response_text,
-            random_id=0)
-    else:
-        vk_api.messages.send(
-            user_id=event.user_id,
-            message='Запрос отправлен в техническую поддержку',
             random_id=0)
 
 
