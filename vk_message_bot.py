@@ -33,8 +33,9 @@ def git_dialog_flow_response(event, vk_api) -> None:
             random_id=0)
 
 
-def main() -> None:
-    """Start the bot."""
+if __name__ == "__main__":
+    load_dotenv()
+    project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
     vk_token = os.getenv('VK_API_TOKEN')
     tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
     tg_log_chat_id = os.getenv('TELEGRAM_BOT_LOGS_CHAT_ID')
@@ -50,9 +51,3 @@ def main() -> None:
         logger.error(
             "Бот VK перестал работать: " + str(e),
             exc_info=True)
-
-
-if __name__ == "__main__":
-    load_dotenv()
-    project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
-    main()
