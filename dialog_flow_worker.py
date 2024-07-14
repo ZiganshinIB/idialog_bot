@@ -1,5 +1,11 @@
+import logging
+import argparse
+import os
+
 import requests
 import json
+
+from dotenv import load_dotenv
 from google.cloud import dialogflow_v2beta1
 from google.cloud import dialogflow
 
@@ -129,13 +135,31 @@ def load_url_intents(project_id, url):
 # Более подробнее читать:
 # https://github.com/ZiganshinIB/idialog_bot/tree/main?tab=readme-ov-file#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D1%84%D0%B8%D1%87%D0%B8
 if __name__ == "__main__":
-    #  Для примера подгружаем интенты из JSON-файла по следующему адресу:
-    url = 'https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json'
-    response = requests.get(url)
-    data_for_dialog = json.loads(response.content)
-    for display_name in data_for_dialog:
-        training_phrases = data_for_dialog[display_name]['questions']
-        message_texts = data_for_dialog[display_name]['answer']
-        project_id = 0 # ID вашего проекта
-        create_intent(project_id, display_name, training_phrases,
-                      [message_texts])
+    load_dotenv()
+    parser = argparse.ArgumentParser(
+        description='Описание что делает программа'
+    )
+    parser.add_argument('-u', '--url',
+                        help='URL-адрес JSON-файла с интентами',
+                        default="https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json")
+    parser.add_argument('-p', '--project_id',
+                        help='ID проекта в Google Cloud',
+                        default=os.getenv('GOOGLE_CLOUD_PROJECT'))
+    args = parser.parse_args()
+    url = args.url
+    project_id = args.project_id
+    logger = logging.getLogger(__name__)
+    try:
+        response = requests.get(url, timeout=4)
+        response.raise_for_status()
+        data_for_dialog = json.loads(response.content)
+        for display_name, intent in data_for_dialog.items():
+            training_phrases = intent['questions']
+            message_texts = intent['answer']
+            create_intent(project_id, display_name, training_phrases,
+                          [message_texts])
+    except Exception as e:
+        logger.error(
+            "Произошла ошибка при загрузке интентов из JSON-файла: " + str(e),
+        )
+
