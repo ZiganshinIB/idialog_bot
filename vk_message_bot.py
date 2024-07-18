@@ -20,7 +20,6 @@ def git_dialog_flow_response(event, vk_api) -> None:
     :return: None
     """
     response = get_dialog_response(
-        project_id,
         event.text,
         event.user_id)
     if response['is_fallback']:
@@ -35,7 +34,6 @@ def git_dialog_flow_response(event, vk_api) -> None:
 
 if __name__ == "__main__":
     load_dotenv()
-    project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
     vk_token = os.getenv('VK_API_TOKEN')
     tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
     tg_log_chat_id = os.getenv('TELEGRAM_BOT_LOGS_CHAT_ID')

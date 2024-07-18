@@ -32,7 +32,6 @@ def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
     :return: None
     """
     response = get_dialog_response(
-        project_id,
         update.message.text,
         update.message.chat_id)
     if response['is_fallback']:
@@ -44,7 +43,6 @@ def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
 
 if __name__ == '__main__':
     load_dotenv()
-    project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
     tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
     tg_log_chat_id = os.getenv('TELEGRAM_BOT_LOGS_CHAT_ID')
     logger.addHandler(MyLogsHandler(tg_bot_token, tg_log_chat_id))
