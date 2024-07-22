@@ -34,10 +34,7 @@ def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
     response = get_dialog_response(
         update.message.text,
         update.message.chat_id)
-    if response['is_fallback']:
-        response_text = 'Я не понимаю о чём речь'
-    else:
-        response_text = response.response_text
+    response_text = response['response_text']
     update.message.reply_text(response_text)
 
 

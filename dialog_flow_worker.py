@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from google.cloud import dialogflow_v2beta1
 from google.cloud import dialogflow
 
-
+load_dotenv()
 PROJECT_ID = os.getenv('DIALOG_FLOW_PROJECT_ID')
 
 
@@ -25,9 +25,9 @@ def get_dialog_response( text, session_id, language_code='ru'):
         session=session,
         query_input=query_input)
     response = {
-        'is_fallback': dialogflow_response.query_result.is_fallback,
+        'is_fallback': dialogflow_response.query_result.intent.is_fallback,
         'query_text': dialogflow_response.query_result.query_text,
-        'intent': dialogflow_response.query_result.intent.display_name,
+        'intent': dialogflow_response.query_result.intent,
         'confidence':
             dialogflow_response.query_result.intent_detection_confidence,
         'response_text': dialogflow_response.query_result.fulfillment_text,
