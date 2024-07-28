@@ -9,12 +9,10 @@ from dotenv import load_dotenv
 from google.cloud import dialogflow_v2beta1
 from google.cloud import dialogflow
 
-load_dotenv()
-PROJECT_ID = os.getenv('DIALOG_FLOW_PROJECT_ID')
-
 
 def get_dialog_response( text, session_id, language_code='ru'):
     session_client = dialogflow_v2beta1.SessionsClient()
+    PROJECT_ID = os.getenv('DIALOG_FLOW_PROJECT_ID')
     session = session_client.session_path(PROJECT_ID, session_id)
     text_input = dialogflow_v2beta1.types.TextInput(
         text=text,
@@ -46,7 +44,7 @@ def create_intent(
     :param message_texts: Ответы на training_phrases_parts.
     """
     intents_client = dialogflow.IntentsClient()
-
+    PROJECT_ID = os.getenv('DIALOG_FLOW_PROJECT_ID')
     parent = dialogflow.AgentsClient.agent_path(PROJECT_ID)
     training_phrases = []
     for training_phrases_part in training_phrases_parts:
@@ -133,6 +131,7 @@ def load_url_intents(url):
 # https://github.com/ZiganshinIB/idialog_bot/tree/main?tab=readme-ov-file#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D1%84%D0%B8%D1%87%D0%B8
 if __name__ == "__main__":
     load_dotenv()
+    PROJECT_ID = os.getenv('DIALOG_FLOW_PROJECT_ID')
     parser = argparse.ArgumentParser(
         description='Описание что делает программа'
     )

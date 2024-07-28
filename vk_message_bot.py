@@ -22,10 +22,7 @@ def git_dialog_flow_response(event, vk_api) -> None:
     response = get_dialog_response(
         event.text,
         event.user_id)
-    if response['is_fallback']:
-        response_text = 'Запрос отправлен в техническую поддержку дождитесь ответа'
-    else:
-        response_text = response.response_text
+    response_text = response['response_text']
     vk_api.messages.send(
             user_id=event.user_id,
             message=response_text,
