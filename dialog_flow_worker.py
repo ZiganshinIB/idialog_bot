@@ -10,10 +10,10 @@ from google.cloud import dialogflow_v2beta1
 from google.cloud import dialogflow
 
 
-def get_dialog_response( text, session_id, language_code='ru'):
+def get_dialog_response( text, session_id, project_id ,language_code='ru', ):
     session_client = dialogflow_v2beta1.SessionsClient()
-    PROJECT_ID = os.getenv('DIALOG_FLOW_PROJECT_ID')
-    session = session_client.session_path(PROJECT_ID, session_id)
+
+    session = session_client.session_path(project_id, session_id)
     text_input = dialogflow_v2beta1.types.TextInput(
         text=text,
         language_code=language_code
@@ -36,7 +36,8 @@ def get_dialog_response( text, session_id, language_code='ru'):
 def create_intent(
         display_name,
         training_phrases_parts,
-        message_texts
+        message_texts,
+        project_id
 ):
     """ Create an intent.
     :param display_name: Тема интента
@@ -44,8 +45,8 @@ def create_intent(
     :param message_texts: Ответы на training_phrases_parts.
     """
     intents_client = dialogflow.IntentsClient()
-    PROJECT_ID = os.getenv('DIALOG_FLOW_PROJECT_ID')
-    parent = dialogflow.AgentsClient.agent_path(PROJECT_ID)
+
+    parent = dialogflow.AgentsClient.agent_path(project_id)
     training_phrases = []
     for training_phrases_part in training_phrases_parts:
         part = dialogflow.Intent.TrainingPhrase.Part(
@@ -131,7 +132,7 @@ def load_url_intents(url):
 # https://github.com/ZiganshinIB/idialog_bot/tree/main?tab=readme-ov-file#%D0%B4%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D1%84%D0%B8%D1%87%D0%B8
 if __name__ == "__main__":
     load_dotenv()
-    PROJECT_ID = os.getenv('DIALOG_FLOW_PROJECT_ID')
+    project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
     parser = argparse.ArgumentParser(
         description='Описание что делает программа'
     )
@@ -140,10 +141,10 @@ if __name__ == "__main__":
                         default="https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json")
     parser.add_argument('-p', '--project_id',
                         help='ID проекта в Google Cloud',
-                        default=PROJECT_ID)
+                        default=project_id)
     args = parser.parse_args()
     url = args.url
-    PROJECT_ID = args.project_id
+    project_id = args.project_id
     logger = logging.getLogger(__name__)
     try:
         response = requests.get(url, timeout=4)
@@ -153,7 +154,8 @@ if __name__ == "__main__":
             training_phrases = intent['questions']
             message_texts = intent['answer']
             create_intent(display_name, training_phrases,
-                          [message_texts])
+                          [message_texts],
+                          project_id)
     except Exception as e:
         logger.error(
             "Произошла ошибка при загрузке интентов из JSON-файла: " + str(e),

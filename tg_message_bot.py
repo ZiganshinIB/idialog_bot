@@ -33,7 +33,9 @@ def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
     """
     response = get_dialog_response(
         update.message.text,
-        update.message.chat_id)
+        update.message.chat_id,
+        project_id
+    )
     response_text = response['response_text']
     update.message.reply_text(response_text)
 
@@ -42,6 +44,7 @@ if __name__ == '__main__':
     load_dotenv()
     tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
     tg_log_chat_id = os.getenv('TELEGRAM_BOT_LOGS_CHAT_ID')
+    project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
     logger.addHandler(MyLogsHandler(tg_bot_token, tg_log_chat_id))
     updater = Updater(tg_bot_token)
     dispatcher = updater.dispatcher

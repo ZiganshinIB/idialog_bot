@@ -58,7 +58,7 @@ python vk_message_bot.py
 ## Дополнительные фичи
 ### Пример запуска обучение 
 ```shell
-python dialog_flow_worker.py [-u URL] [-p PROJECT_ID]
+python dialog_flow_worker.py [-u URL] [-p project_id]
 ```
 Где 
 * URL - путь к файлу с данными для обучения (опциональный параметр ) по умолчанию используется https://dvmn.org/media/filer_public/a7/db/a7db66c0-1259-4dac-9726-2d1fa9c44f20/questions.json

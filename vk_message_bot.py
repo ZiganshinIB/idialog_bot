@@ -21,7 +21,9 @@ def git_dialog_flow_response(event, vk_api) -> None:
     """
     response = get_dialog_response(
         event.text,
-        event.user_id)
+        event.user_id,
+        project_id
+    )
     response_text = response['response_text']
     vk_api.messages.send(
             user_id=event.user_id,
@@ -34,6 +36,7 @@ if __name__ == "__main__":
     vk_token = os.getenv('VK_API_TOKEN')
     tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
     tg_log_chat_id = os.getenv('TELEGRAM_BOT_LOGS_CHAT_ID')
+    project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
     vk_session = vk.VkApi(token=vk_token)
     vk_api = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
