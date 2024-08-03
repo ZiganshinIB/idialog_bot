@@ -14,6 +14,8 @@ from logger import MyLogsHandler
 logger = logging.getLogger(__name__)
 
 
+
+
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
@@ -23,7 +25,7 @@ def start(update: Update, context: CallbackContext) -> None:
     )
 
 
-def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
+def get_dialog_flow_response(update: Update, context: CallbackContext, project_id) -> None:
     """
     A function that generates a response for a dialog using the google dialog flow.
 
@@ -34,7 +36,7 @@ def get_dialog_flow_response(update: Update, context: CallbackContext) -> None:
     response = get_dialog_response(
         update.message.text,
         update.message.chat_id,
-        project_id
+        project_id=project_id,
     )
     response_text = response['response_text']
     update.message.reply_text(response_text)
@@ -45,13 +47,15 @@ if __name__ == '__main__':
     tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
     tg_log_chat_id = os.getenv('TELEGRAM_BOT_LOGS_CHAT_ID')
     project_id = os.getenv('DIALOG_FLOW_PROJECT_ID')
+
+    handler = lambda update, context: get_dialog_flow_response(update=update, context=context, project_id=project_id)
     logger.addHandler(MyLogsHandler(tg_bot_token, tg_log_chat_id))
     updater = Updater(tg_bot_token)
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(
         MessageHandler(
-            Filters.text & ~Filters.command, get_dialog_flow_response))
+            Filters.text & ~Filters.command, handler))
     # Start the Bot
     try:
         updater.start_polling()

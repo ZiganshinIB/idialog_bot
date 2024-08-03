@@ -10,7 +10,7 @@ from dialog_flow_worker import get_dialog_response
 logger = logging.getLogger(__name__)
 
 
-def git_dialog_flow_response(event, vk_api) -> None:
+def git_dialog_flow_response(event, vk_api, project_id) -> None:
     """
     A function that generates a response for a dialog using the google dialog flow.
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     try:
         for event in longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-                git_dialog_flow_response(event, vk_api)
+                git_dialog_flow_response(event, vk_api, project_id)
     except Exception as e:
         logger.error(
             "Бот VK перестал работать: " + str(e),
