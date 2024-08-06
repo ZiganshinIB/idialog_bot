@@ -14,8 +14,6 @@ from logger import MyLogsHandler
 logger = logging.getLogger(__name__)
 
 
-
-
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
@@ -42,7 +40,7 @@ def get_dialog_flow_response(update: Update, context: CallbackContext, project_i
     update.message.reply_text(response_text)
 
 
-if __name__ == '__main__':
+def main():
     load_dotenv()
     tg_bot_token = os.getenv('TELEGRAM_BOT_TOKEN')
     tg_log_chat_id = os.getenv('TELEGRAM_BOT_LOGS_CHAT_ID')
@@ -67,3 +65,7 @@ if __name__ == '__main__':
         logger.error(
             "Бот Telegram перестал работать: " + str(e),
             exc_info=True)
+
+
+if __name__ == '__main__':
+    main()
